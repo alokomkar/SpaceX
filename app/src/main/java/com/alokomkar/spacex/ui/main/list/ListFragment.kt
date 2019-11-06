@@ -1,5 +1,6 @@
 package com.alokomkar.spacex.ui.main.list
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -26,8 +27,17 @@ class ListFragment : Fragment(), ScheduleListAdapter.ItemClickListener {
     @Inject
     lateinit var adapter: ScheduleListAdapter
 
+    private lateinit var onItemSelection: ScheduleListAdapter.ItemClickListener
+
     private val viewModel: ListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(ListViewModel::class.java)
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        if( context is ScheduleListAdapter.ItemClickListener ) {
+            onItemSelection = context
+        }
     }
 
     override fun onCreateView(
@@ -61,6 +71,6 @@ class ListFragment : Fragment(), ScheduleListAdapter.ItemClickListener {
     }
 
     override fun onItemClicked(item: LaunchData) {
-
+        onItemSelection.onItemClicked(item)
     }
 }

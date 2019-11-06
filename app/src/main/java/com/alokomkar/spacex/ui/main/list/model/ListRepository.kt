@@ -14,7 +14,7 @@ class ListRepository(
 ) : ListDataContract.Repository {
 
     override val launchScheduleListResponse: PublishSubject<Response<List<LaunchData>>>
-        get() =  PublishSubject.create<Response<List<LaunchData>>>()
+            =  PublishSubject.create<Response<List<LaunchData>>>()
 
     override fun fetchLaunchSchedule( tbd : Boolean? ) {
         launchScheduleListResponse.loading(true)
