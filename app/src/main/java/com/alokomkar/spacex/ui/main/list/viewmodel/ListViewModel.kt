@@ -13,18 +13,26 @@ class ListViewModel(private val repo: ListDataContract.Repository,
                     private val compositeDisposable: CompositeDisposable
 ) : ViewModel() {
 
-
     val scheduleListResponse: LiveData<Response<List<LaunchData>>> by lazy {
         //Convert publish subject to livedata
         repo.launchScheduleListResponse.toLiveData(compositeDisposable)
     }
 
-    fun getSchedule() {
-        repo.fetchLaunchSchedule(null)
+    var tbd : Boolean? = null
+
+    fun getSchedule( tbd : Boolean? = null ) {
+        repo.fetchLaunchSchedule(tbd)
     }
 
-    fun filterSchedule(tbd : Boolean) {
-        repo.fetchLaunchSchedule(tbd)
+    fun filterSchedule() : Boolean {
+        tbd = !(tbd ?: false)
+        if( tbd == true ) {
+            repo.fetchLaunchSchedule(true)
+        }
+        else
+            repo.fetchLaunchSchedule(null)
+
+        return tbd ?: false
     }
 
     override fun onCleared() {

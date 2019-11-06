@@ -6,6 +6,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -51,10 +53,35 @@ class ListFragment : Fragment(), ScheduleListAdapter.ItemClickListener {
         component.inject(this)
         adapter.itemClickListener = this
         rvSchedule.adapter = adapter
-        viewModel.getSchedule()
+
+        viewModel.getSchedule(viewModel.tbd)
+
+        fabFilter.setImageDrawable(ContextCompat.getDrawable(fabFilter.context,
+            if( viewModel.tbd == null || viewModel.tbd == false )
+                R.drawable.ic_no_filter
+            else
+                R.drawable.ic_filter_list))
+
         scheduleRefreshLayout.isRefreshing = true
-        scheduleRefreshLayout.setOnRefreshListener { viewModel.getSchedule() }
+        scheduleRefreshLayout.setOnRefreshListener { viewModel.getSchedule(viewModel.tbd) }
+
         initialiseDataListener()
+        fabFilter.setOnClickListener {
+            if( viewModel.filterSchedule() ) {
+                showToast(R.string.showing_filtered_list)
+                fabFilter.setImageDrawable(ContextCompat.getDrawable(fabFilter.context, R.drawable.ic_filter_list))
+            }
+            else {
+                showToast(R.string.clearing_filter)
+                fabFilter.setImageDrawable(ContextCompat.getDrawable(fabFilter.context, R.drawable.ic_no_filter))
+            }
+        }
+
+
+    }
+
+    private fun showToast(message: Int) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun initialiseDataListener() {
